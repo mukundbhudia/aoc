@@ -1,26 +1,23 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs::read_to_string;
 
 fn main() {
     let path = "src/input.txt";
+    let input_file_contents = read_to_string(path).expect("something went wrong reading the file");
 
-    let input = File::open(path).expect("error opening file");
-    let buffered = BufReader::new(input);
+    // Part 1
+    let score = input_file_contents
+        .lines()
+        .map(|x| x.split_whitespace().collect::<Vec<_>>())
+        .fold(0, |acc, x| acc + calculate_score(x[0], x[1]));
 
-    let mut score = 0;
-    let mut score_when_choosing_object = 0;
+    // Part 2
+    let score_when_choosing_object = input_file_contents
+        .lines()
+        .map(|x| x.split_whitespace().collect::<Vec<_>>())
+        .fold(0, |acc, x| acc + calculate_chose_to_win_score(x[0], x[1]));
 
-    buffered.lines().for_each(|line| {
-        let line = line.expect("error reading line");
-        let splitted_line = line.split_whitespace().collect::<Vec<_>>();
-
-        score += calculate_score(splitted_line[0], splitted_line[1]);
-        score_when_choosing_object +=
-            calculate_chose_to_win_score(splitted_line[0], splitted_line[1]);
-    });
-
-    println!("score: {score:?}");
-    println!("score_when_choosing_object: {score_when_choosing_object}");
+    println!("score (part 1): {score}");
+    println!("score (part 2): {score_when_choosing_object}");
 }
 
 fn calculate_score(opponent_object: &str, your_object: &str) -> i32 {
