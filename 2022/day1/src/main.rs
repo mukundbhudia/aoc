@@ -1,11 +1,8 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs::read_to_string;
 
 fn main() {
     let path = "src/input.txt";
-
-    let input = File::open(path).expect("error opening file");
-    let buffered = BufReader::new(input);
+    let input_file_contents = read_to_string(path).expect("something went wrong reading the file");
 
     let mut highest_cal_count = 0;
     let mut current_cal_count = 0;
@@ -13,8 +10,7 @@ fn main() {
     let mut all_scores: Vec<(i32, i32)> = vec![];
     let mut elf_counter = 0;
 
-    buffered.lines().for_each(|line| {
-        let line = line.expect("error reading line");
+    input_file_contents.lines().for_each(|line| {
         if line.is_empty() {
             all_scores.push((elf_counter, current_cal_count));
             if current_cal_count > highest_cal_count {
